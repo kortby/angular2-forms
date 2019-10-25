@@ -1,0 +1,175 @@
+<h2>Order Sheet</h2>
+<div class="welcome-back">
+  <h2 *ngIf="showWelcomeMessage">
+    Welcome Back {{ customerNameControl.value }}!
+  </h2>
+</div>
+<form novalidate [formGroup]="orderSheetsForm" (ngSubmit)="onSubmitForm()">
+  <section class="customer-name">
+    <input formControlName="customerName" type="text" placeholder="Your Name" />
+    <div
+      class="error"
+      *ngIf="
+        (customerNameControl.touched || customerNameControl.dirty) &&
+        customerNameControl.errors?.required
+      "
+    >
+      This field is required.
+    </div>
+    <div class="error" *ngIf="customerNameControl.errors?.minlength">
+      min length is {{ customerNameControl.errors.minlength.requiredLength }}.
+    </div>
+  </section>
+  <section class="size">
+    <h1>Pick your size</h1>
+    <ul>
+      <li>
+        <input
+          id="sizeSmall"
+          type="radio"
+          formControlName="size"
+          value="small"
+        />
+        <label for="sizeSmall">Small</label>
+      </li>
+      <li>
+        <input
+          id="sizeLarge"
+          type="radio"
+          formControlName="size"
+          value="large"
+        />
+        <label for="sizeLarge">Large</label>
+      </li>
+    </ul>
+  </section>
+  <section class="specialty-sandwiches">
+    <h1>Specialty Sandwiches</h1>
+    <label>Me wants:</label>
+    <select formControlName="specialtySandwich">
+      <option value=""></option>
+      <option value="The Grinder">The Grinder</option>
+      <option value="Cordon Bleu">Cordon Bleu</option>
+      <option value="Cali Cheesesteak">Cali Cheesesteak</option>
+    </select>
+  </section>
+  <section
+    class="build-your-own"
+    *ngIf="!this.orderSheetsForm.get('specialtySandwich').value"
+  >
+    <h1>Build Your Own</h1>
+    <section>
+      <h1>A Bread</h1>
+      <ul>
+        <li>
+          <input
+            id="breadWheatRoll"
+            type="radio"
+            formControlName="bread"
+            value="wheat"
+          />
+          <label for="breadWheatRoll">Wheat Roll</label>
+        </li>
+        <li>
+          <input
+            id="breadWhiteRoll"
+            type="radio"
+            formControlName="bread"
+            value="white"
+          />
+          <label for="breadWhiteRoll">White Roll</label>
+        </li>
+        <li>
+          <input
+            id="breadSourdoughRoll"
+            type="radio"
+            formControlName="bread"
+            value="roll"
+          />
+          <label for="breadSourdoughRoll">Sourdough Roll</label>
+        </li>
+      </ul>
+      <div class="error" *ngIf="orderSheetsForm.errors">
+        <div *ngIf="orderSheetsForm.errors.requiredWhen">
+          let us know what bread you like.
+        </div>
+      </div>
+    </section>
+    <section formGroupName="meats">
+      <h1>The Meats</h1>
+      <ul>
+        <li>
+          <input id="chicken" formControlName="chicken" type="checkbox" />
+          <label for="chicken">chicken</label>
+        </li>
+        <li>
+          <input id="turcky" formControlName="turcky" type="checkbox" />
+          <label for="turcky">Turkey</label>
+        </li>
+        <li>
+          <input id="beef" formControlName="beef" type="checkbox" />
+          <label for="beef">Roast Beef</label>
+        </li>
+      </ul>
+    </section>
+    <section formGroupName="cheeses">
+      <h1>The Cheeses</h1>
+      <ul>
+        <li>
+          <input id="cheedar" formControlName="cheedar" type="checkbox" />
+          <label for="cheedar">cheedar</label>
+        </li>
+        <li>
+          <input id="brie" formControlName="brie" type="checkbox" />
+          <label for="brie">Brie</label>
+        </li>
+        <li>
+          <input id="vash" formControlName="vash" type="checkbox" />
+          <label for="vash">Vash</label>
+        </li>
+      </ul>
+    </section>
+    <section formGroupName="veggiesAndSuch">
+      <h1>Veggies 'n Such</h1>
+      <ul>
+        <li>
+          <input id="carrot" formControlName="carrot" type="checkbox" />
+          <label for="carrot">carrot</label>
+        </li>
+        <li>
+          <input id="potato" formControlName="potato" type="checkbox" />
+          <label for="potato">potato</label>
+        </li>
+        <li>
+          <input id="tomato" formControlName="tomato" type="checkbox" />
+          <label for="tomato">tomato</label>
+        </li>
+      </ul>
+    </section>
+  </section>
+  <section class="weird-requests" formArrayName="weirdRequests">
+    <h1>Weird Requests</h1>
+    <ul>
+      <li *ngFor="let item of weirdRequestsControl.controls; let i = index">
+        <input type="text" formControlName="{{ i }}" />
+        <button
+          type="button"
+          title="Remove Request"
+          (click)="onRemoveWeirdRequest(i)"
+        >
+          Remove
+        </button>
+      </li>
+    </ul>
+    <button type="button" (click)="onAddWeirdRequests()">Add a Request</button>
+  </section>
+  <section>
+    <h1>Other Notes</h1>
+    <textarea formControlName="othernotes"></textarea>
+  </section>
+  <button type="submit" [disabled]="orderSheetsForm.invalid">
+    Place Order
+  </button>
+  <button type="button" (click)="OnRecetForm()">Reset</button>
+</form>
+<app-debug-panel [data]="orderSheetsForm.value"></app-debug-panel>
